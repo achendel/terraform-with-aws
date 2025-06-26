@@ -28,6 +28,13 @@ resource "aws_s3_bucket_acl" "mybucket_25" {
   bucket = aws_s3_bucket.mybucket_25.id
   acl    = "public-read"
 }
+# Resource to avoid error "AccessControlListNotSupported: The bucket does not allow ACLs"
+resource "aws_s3_bucket_ownership_controls" "public_storage" {
+  bucket = aws_s3_bucket.mybucket_25.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
 resource "aws_s3_object" "index" {
   bucket = aws_s3_bucket.mybucket_25.id
   key="index.html"
@@ -35,6 +42,7 @@ resource "aws_s3_object" "index" {
   acl="public-read"
   content_type="text/html"
 }
+
 resource "aws_s3_object" "error" {
   bucket = aws_s3_bucket.mybucket_25.id
   key="error.html"
